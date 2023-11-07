@@ -1,4 +1,4 @@
-# mysqlexample on MacOS mysql insert and select basic example
+# MySQL very basic example on MacOS to insert and select rows from a table.
 - install docker desktop: https://www.docker.com/products/docker-desktop/
 - install python3
 - install mysql 8 client
