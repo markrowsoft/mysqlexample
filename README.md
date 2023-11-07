@@ -7,7 +7,7 @@
 
 
 - from terminal run `run.sh` to do all of this :
-- ``` bash
+``` bash
   #!/bin/bash
 #  uncomment below to install brew
 ####################################################
