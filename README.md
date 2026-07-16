@@ -1,44 +1,49 @@
-# MySQL very basic example on MacOS to insert and select rows from a table.
-- install docker desktop: https://www.docker.com/products/docker-desktop/
-- install python3
-- install mysql 8 client
-- run sql create script
-- run `python3 -m pip install -r requirements.txt`
+# MySQL Python example
 
+Minimal demo: start Percona in Docker, create a table, insert a row from Python, and print it.
 
-- from terminal run `run.sh` to do all of this :
-``` bash
-  #!/bin/bash
-#  uncomment below to install brew
-####################################################
+## Prerequisites
 
-# /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+- Docker Desktop
+- Python 3.10+
+- MySQL client (`mysql` CLI) for schema setup
 
-## install mysql8 client
-# brew mysql-client@8.0
+## Quick start
 
-####################################################
-# uncomment below to install Docker Desktop on MacOS
-####################################################
-# curl -fsSL https://download.docker.com/mac/stable/Docker.dmg -o ~/Docker.dmg
-# hdiutil detach /Volumes/Docker
-# cp -R /Volumes/Docker/Docker.app ~/Applications/
-# hdiutil detach /Volumes/Docker
-# open ~/Applications/Docker.app
+1. Start the database:
+   ```bash
+   docker compose up -d
+   ```
+2. Wait ~10 seconds, then create the schema:
+   ```bash
+   mysql -u root -proot -h 127.0.0.1 < create_sql.sql
+   ```
+3. Install dependencies:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+4. Run the demo (prompts for name, phone, SSN):
+   ```bash
+   python saveShow.py
+   ```
+5. Stop the database:
+   ```bash
+   docker compose down
+   ```
 
-docker-compose up -d
-echo "waiting 10 seconds for docker"
-sleep 10
-source create_table.sh
-python3 -m venv .venv
-python3 -m pip install pip --upgrade
-python3 -m pip install -r requirements.txt
-. ./.venv/bin/activate
-python3 -m pip install pip --upgrade
-python3 -m pip install mysql-connector-python
-pip freeze > requirements.txt
-python3 saveShow.py
-sleep 5
-# rm -rf ./.venv
-docker-compose down
+Or run everything with `./run.sh` (starts the stack, installs deps, runs the script, tears down).
+
+Connection defaults are `root` / `root` on `127.0.0.1` / `myusers`. Override with `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `MYSQL_DATABASE`.
+
+## Tests
+
+```bash
+source .venv/bin/activate
+pytest -v
 ```
+
+## Note
+
+Local demo only. Default DB password is `root`. Do not use for real PII.
