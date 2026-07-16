@@ -1,7 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-# Start DB, create schema, install deps, run the demo, tear down.
+# Start DB, create schema, install deps with uv, run the demo, tear down.
+
+if ! command -v uv >/dev/null 2>&1; then
+  echo "uv is required. Install: https://docs.astral.sh/uv/getting-started/installation/" >&2
+  exit 1
+fi
 
 if docker compose version >/dev/null 2>&1; then
   COMPOSE="docker compose"
@@ -15,13 +20,8 @@ sleep 10
 
 ./create_table.sh
 
-python3 -m venv .venv
-# shellcheck disable=SC1091
-source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
-
-python3 saveShow.py
+uv sync --group dev
+uv run python saveShow.py
 
 sleep 5
 $COMPOSE down

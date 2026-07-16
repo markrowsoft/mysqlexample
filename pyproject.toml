@@ -1,0 +1,16 @@
+[project]
+name = "mysqlexample"
+version = "0.1.0"
+description = "Minimal MySQL insert/select demo"
+requires-python = ">=3.10"
+dependencies = [
+    "mysql-connector-python",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

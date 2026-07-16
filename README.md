@@ -4,6 +4,7 @@ Minimal demo: start Percona in Docker, create a table, insert a row from Python,
 
 ## Prerequisites
 
+- [uv](https://docs.astral.sh/uv/) (Python package manager)
 - Docker Desktop
 - Python 3.10+
 - MySQL client (`mysql` CLI) for schema setup
@@ -18,15 +19,13 @@ Minimal demo: start Percona in Docker, create a table, insert a row from Python,
    ```bash
    mysql -u root -proot -h 127.0.0.1 < create_sql.sql
    ```
-3. Install dependencies:
+3. Install dependencies (latest compatible versions; no version pins):
    ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
+   uv sync --group dev
    ```
 4. Run the demo (prompts for name, phone, SSN):
    ```bash
-   python saveShow.py
+   uv run python saveShow.py
    ```
 5. Stop the database:
    ```bash
@@ -37,12 +36,23 @@ Or run everything with `./run.sh` (starts the stack, installs deps, runs the scr
 
 Connection defaults are `root` / `root` on `127.0.0.1` / `myusers`. Override with `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, and `MYSQL_DATABASE`.
 
-## Tests
+## Tests and dependency resolution
+
+Dependencies are **not version-pinned**. Installs use whatever `uv` resolves as current. That keeps you on newer releases and reduces stale CVE noise from locked pins.
+
+**You must run the unit tests after install** (and after any dependency change):
 
 ```bash
-source .venv/bin/activate
-pytest -v
+uv sync --group dev
+uv run pytest -v
 ```
+
+If installs or tests fail because of a bad or incompatible resolution:
+
+1. Upgrade tools: `uv self update`
+2. Clear and re-resolve: `rm -rf .venv && uv sync --group dev`
+3. If a package breaks the build, temporarily constrain it in `pyproject.toml`, re-run tests, and prefer the newest working release.
+4. Re-run `uv run pytest -v` until green before using the demo.
 
 ## Note
 
